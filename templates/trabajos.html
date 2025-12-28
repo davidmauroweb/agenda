@@ -46,7 +46,7 @@ Trabajos
                         <tr class="{%if t.sol%} text-secondary {% endif %}">
                             <td>{{t.id}}</td>
                             <td><a href="/trabajos/{{c.id}}"><i class="bi bi-person-bounding-box"></i></a> {{c.nombre}}</td>
-                            <td>{{t.fecha.strftime("%d / %m / %Y")}}</td>
+                            <td>{{t.fecha.strftime("%d/%m/%Y")}}</td>
                             <td>{{t.tarea}}</td>
                             {%if t.sol%} <td>{{t.sol}}</td> {%else%} <td></td> {% endif %}
                             <td>{{t.total}}</td>

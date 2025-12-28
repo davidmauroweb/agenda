@@ -31,6 +31,24 @@ def login():
             flash(str(e), "danger")
     return render_template("auth.html", form=form, btn_action="Iniciar Sesión")
 
+@app.route("/register/", methods=["GET", "POST"])
+def register():
+    form = RegisterForm()
+    if form.validate_on_submit():
+        try:
+            new_user = Usuarios(
+                username=form.username.data,
+                email=form.email.data,
+                pwd=bcrypt.generate_password_hash(form.pwd.data),
+                rol=0
+            )
+            db.session.add(new_user)
+            db.session.commit()
+            flash("Cuenta creada exitosamente", "success")
+            return redirect(url_for("login"))
+        except Exception as e:
+            flash(str(e), "danger")
+    return render_template("auth.html", form=form, btn_action="Registrar")
 
 @app.route("/logout")
 
@@ -73,7 +91,11 @@ def trabajos():
         lsCli = Clientes.query.with_entities(Clientes.id, Clientes.nombre).order_by(Clientes.nombre).all()
         return render_template('trabajos.html', trabajos = lsTrabajos, clientes = lsCli, hoy = hoy)
     if request.method == 'POST':
-        nuevo_trabajo = Trabajos(id_cli=request.form['id_cli'], fecha=datetime.strptime(request.form['fecha'], '%Y-%m-%d').date(), tarea=request.form['tarea'], total=request.form['total'])
+        if not request.form['total']:
+            tot = 0
+        else:
+            tot = request.form['total']
+        nuevo_trabajo = Trabajos(id_cli=request.form['id_cli'], fecha=datetime.strptime(request.form['fecha'], '%Y-%m-%d').date(), tarea=request.form['tarea'], total=tot)
         db.session.add(nuevo_trabajo)
         db.session.commit()
         return redirect(url_for('trabajos'))

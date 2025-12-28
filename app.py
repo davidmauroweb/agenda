@@ -31,24 +31,6 @@ def login():
             flash(str(e), "danger")
     return render_template("auth.html", form=form, btn_action="Iniciar Sesión")
 
-@app.route("/register/", methods=["GET", "POST"])
-def register():
-    form = RegisterForm()
-    if form.validate_on_submit():
-        try:
-            new_user = Usuarios(
-                username=form.username.data,
-                email=form.email.data,
-                pwd=bcrypt.generate_password_hash(form.pwd.data),
-                rol=0
-            )
-            db.session.add(new_user)
-            db.session.commit()
-            flash("Cuenta creada exitosamente", "success")
-            return redirect(url_for("login"))
-        except Exception as e:
-            flash(str(e), "danger")
-    return render_template("auth.html", form=form, btn_action="Registrar")
 
 @app.route("/logout")
 

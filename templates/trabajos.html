@@ -1,0 +1,98 @@
+{% extends 'index.html' %}
+{% block title %}
+{{super()}}
+Trabajos
+{% endblock %}
+{% block body %}
+<form method="POST" action="/trabajos">
+  <div class="form-row">
+    <div class="col-2">
+        <select id="id_cli" class="form-control form-control-sm" name="id_cli">
+            {% for c in clientes%}
+                <option value="{{c.id}}">{{c.nombre}}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-2">
+      <input id="fecha" type="date" class="form-control form-control-sm" name="fecha" value="{{ hoy }}">
+    </div>
+    <div class="col-5">
+        <input id="tarea" type="text" class="form-control form-control-sm" name="tarea" placeholder="Tarea a realizar">
+    </div>
+    <div class="col-2">
+        <input id="total" type="number" class="form-control form-control-sm" name="total" placeholder="monto">
+    </div>
+    <div class="col">
+        <button type="submit" class="btn btn-sm btn-success">Nuevo</button>
+    </div>
+  </div>
+</form>
+<div class="row my-2">
+     <table class="table table-sm table-hover">
+                    <thead class="text-end">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Fecha</th>
+                            <th scope="col">Tarea</th>
+                            <th scope="col">Solución</th>
+                            <th scope="col">Total</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for t, c in trabajos %}
+                        <tr class="{%if t.sol%} text-secondary {% endif %}">
+                            <td>{{t.id}}</td>
+                            <td><a href="/trabajos/{{c.id}}"><i class="bi bi-person-bounding-box"></i></a> {{c.nombre}}</td>
+                            <td>{{t.fecha.strftime("%d / %m / %Y")}}</td>
+                            <td>{{t.tarea}}</td>
+                            {%if t.sol%} <td>{{t.sol}}</td> {%else%} <td></td> {% endif %}
+                            <td>{{t.total}}</td>
+                            <td>
+                                <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#id{{t.id}}">
+                                   <i class="bi bi-pencil-square"></i>
+                                </button>
+                            </td>
+                            <!-- MODAL -->
+                            <div class="modal fade" id="id{{t.id}}" tabindex="-1" aria-labelledby="Edit Trabajo" aria-hidden="true">
+                            <form action="/etrabajo" method="POST">
+                                <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="Edit Trabajo">{{c.nombre}} : {{t.fecha}}</h5>
+                                    </div>
+                                    <div class="modal-body">
+                                        <input type="hidden" name="id" value="{{t.id}}">
+                                        <div class="row">
+                                            <label for="total" class="col-sm-3 col-form-label text-md-end">Monto</label>
+                                            <div class="col-sm-9"><input id="total" type="number" class="form-control form-control-sm" name="total" value="{{t.total}}"></div>
+                                        </div>
+                                        <div class="row">
+                                            <label for="sol" class="col-sm-3 col-form-label text-md-end">Solución</label>
+                                            <div class="col-sm-9"><textarea name="sol" id="sol" row="3" class="form-control form-control-sm">{{t.sol}}</textarea></div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <div class="col-3"><button type="button" class="btn btn-sm btn-block btn-secondary" data-bs-dismiss="modal">Cancelar</button></div>
+                                        <div class="col-3"><button type="submit" class="btn btn-sm btn-block btn-success">Editar</button></div>
+                                    </div>
+                                    </div>
+                                </div>
+                            </form>
+                            </div>
+                            <!-- FIN MODAL-->
+                            <td><form action="{{ url_for('dtrabajo', id=t.id) }}" method="POST">
+                                    <button onclick="return confirm('¿Estás seguro de eliminar este registro?')"
+                                            class="btn btn-sm btn-danger">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+</tbody>
+</table>
+</div>
+{% endblock %}

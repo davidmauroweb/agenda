@@ -1,0 +1,99 @@
+{% extends 'index.html' %}
+{% block title %}
+{{super()}}
+Clientes
+{% endblock %}
+{% block body %}
+<div class="row">
+            <div class="col-md-4 mx-auto">
+                <div class="card">
+                    <div class="card-header">Clientes</div>
+                    <div class="card-body">
+                        <form action="/ncli" method="POST">
+                            <div class="form-group">
+                                <div class="row"><input type="text" placeholder="Nombre" autofocus class="form-control" name="nombre" maxlength="50"></div>
+                                <div class="row py-3"><input type="text" placeholder="Teléfono" class="form-control" name="tel" required maxlength="10"></div>
+                                <div class="row"><input type="text" placeholder="Domicilio" class="form-control" name="dom" maxlength="50"></div>
+                                <div class="row py-3"><button class="btn btn-sm btn-success btn-block" type="submit">Enviar</button></div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-footer"></div>
+                </div>
+            </div>
+            <div class="card col-md-6 mx-auto">
+                <div class="card-header">
+                    Lista de Clientes
+                </div>
+                <div class="card-body">
+                <table class="table table-sm table-hover">
+                    <thead class="text-end">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Teléfono</th>
+                            <th scope="col">Domicilio</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for c in clis %}
+                        <tr>
+                            <td scope="row">{{c.id }}</td>
+                            <td>{{c.nombre }}</td>
+                            <td>{{c.tel }}</td>
+                            <td>{{c.dom }}</td>
+                            <td><button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#id{{c.id}}">
+                                   <i class="bi bi-pencil-square"></i>
+                                </button>
+                            </td>
+                       
+
+                        <!-- Modal -->
+                            <div class="modal fade" id="id{{c.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Editar {{c.nombre}}</h5>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="/ecli" method="POST">
+                                        <input type="hidden" name="cliId" value="{{c.id}}">
+                                        <div class="form-group">
+                                            <div class="form-group row">
+                                                <label for="nombre" class="col-sm-3 col-form-label text-md-end">Nombre</label>
+                                                <div class="col-sm-9"><input id="nombre" type="text" placeholder="Nombre" maxlength="50" autofocus class="form-control" value="{{c.nombre}}" name="nombre" required></div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="tel" class="col-sm-3 col-form-label text-md-end">Teléfono</label>
+                                                <div class="col-sm-9"><input id="tel" type="text" placeholder="Teléfono" maxlength="10" class="form-control" value="{{c.tel}}" name="tel" required></div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="dom" class="col-sm-3 col-form-label text-md-end">Domicilio</label>
+                                                <div class="col-sm-9"><input id="dom" type="text" placeholder="Domicilio" maxlength="50" class="form-control" value="{{c.dom}}" name="dom"></div>
+                                            </div>
+                                            <div class="row py-3">
+                                                <div class="col-6"></div>
+                                                <div class="col-3"><button class="btn btn-sm btn-success btn-block" type="submit">Enviar</button></div>
+                                                <div class="col-3"><button type="button" class="btn btn-secondary btn-sm btn-block" data-bs-dismiss="modal">Cancelar</button></div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                </div>
+                                </div>
+                            </div>
+                            </div>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                </div>
+                <div class="card-footer">
+
+                </div>
+            </div>
+        </div>
+{% endblock %}
